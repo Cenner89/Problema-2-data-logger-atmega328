@@ -52,6 +52,20 @@ src/    Codigo-fonte em C para o ATmega328
 tools/  Scripts auxiliares de build, teste ou simulacao
 ```
 
+## Ferramenta recomendada
+
+A avaliacao inicial aponta como melhor caminho:
+
+```text
+MPLAB X + MPLAB XC8
+```
+
+Motivo: o Problema 2 pede implementacao em linguagem C, uso de perifericos do ATmega328, modularizacao, documentacao e testes. O Microchip Studio continua sendo uma alternativa valida, mas o MPLAB X com XC8 esta mais alinhado para iniciar um projeto novo em C.
+
+Ver detalhes em:
+
+- `docs/AVALIACAO_FERRAMENTAS.md`
+
 ## Status
 
-Repositorio local iniciado. O proximo passo e criar/conectar o repositorio remoto no GitHub e iniciar a especificacao dos requisitos do sistema.
+Repositorio local e remoto iniciados. O proximo passo e criar a especificacao dos requisitos do sistema e definir a arquitetura inicial do firmware.
