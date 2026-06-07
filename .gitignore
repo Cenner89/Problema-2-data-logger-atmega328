@@ -1,0 +1,35 @@
+# Microchip Studio / Atmel Studio
+Debug/
+Release/
+_build/
+*.atsuo
+*.componentinfo.xml
+*.elf
+*.hex
+*.eep
+*.lss
+*.map
+*.o
+*.d
+*.lst
+*.obj
+*.pdb
+
+# Visual Studio user/cache files
+.vs/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+
+# Local/generated files
+*.log
+*.tmp
+*.bak
+*.zip
+
+# OS files
+Thumbs.db
+Desktop.ini
