@@ -52,6 +52,23 @@ src/    Codigo-fonte em C para o ATmega328
 tools/  Scripts auxiliares de build, teste ou simulacao
 ```
 
+## Build
+
+O projeto ja possui uma base de firmware em C e um script de compilacao usando o **MPLAB XC8 v3.10**.
+
+Para compilar pelo terminal:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\build.ps1
+```
+
+Saidas geradas:
+
+```text
+build/problema2.elf
+build/problema2.hex
+```
+
 ## Ferramenta recomendada
 
 A avaliacao inicial aponta como melhor caminho:
@@ -65,7 +82,12 @@ Motivo: o Problema 2 pede implementacao em linguagem C, uso de perifericos do AT
 Ver detalhes em:
 
 - `docs/AVALIACAO_FERRAMENTAS.md`
+- `docs/REQUISITOS.md`
+- `docs/ARQUITETURA.md`
+- `docs/PLANO_DE_TRABALHO.md`
 
 ## Status
 
-Repositorio local e remoto iniciados. O proximo passo e criar a especificacao dos requisitos do sistema e definir a arquitetura inicial do firmware.
+Repositorio local e remoto iniciados. A primeira base do firmware em C ja compila com XC8 e gera arquivo HEX.
+
+Proximo passo: detalhar mapa de pinos e implementar/testar os perifericos principais, com prioridade para ADC e USART.

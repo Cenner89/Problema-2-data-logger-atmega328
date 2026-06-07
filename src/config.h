@@ -1,0 +1,22 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define F_CPU 16000000UL
+
+#define ADC_CHANNEL_TEMPERATURE 0
+#define ADC_CHANNEL_LIGHT       1
+
+#define SENSOR_HUMIDITY_PIN_PORT PINB
+#define SENSOR_HUMIDITY_PIN_DDR  DDRB
+#define SENSOR_HUMIDITY_PIN      PB0
+
+#define SENSOR_RAIN_PIN_PORT     PINB
+#define SENSOR_RAIN_PIN_DDR      DDRB
+#define SENSOR_RAIN_PIN          PB1
+
+#define LOGGER_SAMPLE_DELAY_MS   1000U
+#define FILTER_SHIFT             3U
+
+#define COMM_BAUD_RATE           9600UL
+
+#endif

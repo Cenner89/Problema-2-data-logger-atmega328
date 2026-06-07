@@ -2,6 +2,7 @@
 Debug/
 Release/
 _build/
+build/
 *.atsuo
 *.componentinfo.xml
 *.elf
