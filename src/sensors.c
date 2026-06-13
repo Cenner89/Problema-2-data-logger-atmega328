@@ -15,6 +15,8 @@ void sensors_init(void)
 
     SENSOR_HUMIDITY_PIN_DDR &= ~(1 << SENSOR_HUMIDITY_PIN);
     SENSOR_RAIN_PIN_DDR &= ~(1 << SENSOR_RAIN_PIN);
+    SENSOR_HUMIDITY_OUT_PORT |= (1 << SENSOR_HUMIDITY_PIN);
+    SENSOR_RAIN_OUT_PORT |= (1 << SENSOR_RAIN_PIN);
 
     filter_init(&temperature_filter);
     filter_init(&light_filter);

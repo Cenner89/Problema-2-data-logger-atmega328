@@ -18,6 +18,8 @@ main.c
         +-- rtc.c
         |
         +-- comm.c
+        |
+        +-- mode_select.c
 ```
 
 ## Responsabilidades dos modulos
@@ -32,6 +34,7 @@ main.c
 | `filter.c` | Aplicar filtro digital passa-baixas nas amostras analogicas. |
 | `rtc.c` | Obter data e hora do RTC externo. |
 | `comm.c` | Enviar registros pela interface escolhida. |
+| `mode_select.c` | Ler chave/jumper de selecao da interface de comunicacao. |
 
 ## Estrategia de filtragem inicial
 
@@ -64,6 +67,15 @@ Inicialmente serao previstos dois modos:
 - `COMM_MODE_WIRELESS`
 
 Na primeira etapa, a USART sera priorizada porque e mais facil de testar no simulador e no hardware. O modo sem fio entrara depois como driver especifico.
+
+## Selecao fisica da comunicacao
+
+Foi adicionada uma selecao por pino usando `PD2`.
+
+- `PD2` em nivel alto ou aberto: modo USART.
+- `PD2` em nivel baixo, ligado ao GND: modo sem fio.
+
+Essa decisao atende ao enunciado, que pede que o usuario escolha a versao de comunicacao antes da instalacao.
 
 ## Proximo passo tecnico
 

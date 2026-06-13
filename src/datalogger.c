@@ -1,6 +1,7 @@
 #include "datalogger.h"
 
 #include "comm.h"
+#include "mode_select.h"
 #include "rtc.h"
 #include "sensors.h"
 #include "types.h"
@@ -9,7 +10,8 @@ void datalogger_init(void)
 {
     sensors_init();
     rtc_init();
-    comm_init(COMM_MODE_USART);
+    mode_select_init();
+    comm_init(mode_select_get_comm_mode());
 }
 
 void datalogger_run_once(void)

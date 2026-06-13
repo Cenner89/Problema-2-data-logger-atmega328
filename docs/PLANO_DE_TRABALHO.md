@@ -18,14 +18,14 @@ Status: concluida
 
 ## Etapa 2 - Requisitos e arquitetura detalhada
 
-Status: proxima etapa
+Status: em andamento
 
 - Confirmar componentes reais disponiveis:
   - modelo do RTC;
   - modelo do sensor de umidade;
   - modelo do modulo sem fio;
   - forma de armazenamento local, se houver.
-- Definir mapa de pinos do ATmega328.
+- Definir mapa de pinos do ATmega328. Status: primeira versao criada.
 - Definir periodo de amostragem.
 - Definir formato do pacote de dados transmitido.
 

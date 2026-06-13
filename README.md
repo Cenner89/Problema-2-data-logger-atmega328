@@ -84,6 +84,7 @@ Ver detalhes em:
 - `docs/AVALIACAO_FERRAMENTAS.md`
 - `docs/REQUISITOS.md`
 - `docs/ARQUITETURA.md`
+- `docs/MAPA_PINOS.md`
 - `docs/PLANO_DE_TRABALHO.md`
 
 ## Status

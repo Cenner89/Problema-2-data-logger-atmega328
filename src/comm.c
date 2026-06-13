@@ -43,6 +43,12 @@ static void usart_send_uint16(uint16_t value)
     }
 }
 
+static void usart_send_uint8_2digits(uint8_t value)
+{
+    usart_send_char((char)('0' + ((value / 10) % 10)));
+    usart_send_char((char)('0' + (value % 10)));
+}
+
 void comm_init(comm_mode_t mode)
 {
     uint16_t ubrr = (uint16_t)((F_CPU / (16UL * COMM_BAUD_RATE)) - 1UL);
@@ -61,6 +67,18 @@ void comm_send_record(const log_record_t *record)
         /* Stub: por enquanto o modo sem fio reutiliza a saida serial. */
     }
 
+    usart_send_uint8_2digits(record->timestamp.day);
+    usart_send_char('/');
+    usart_send_uint8_2digits(record->timestamp.month);
+    usart_send_char('/');
+    usart_send_uint16(record->timestamp.year);
+    usart_send_char(' ');
+    usart_send_uint8_2digits(record->timestamp.hour);
+    usart_send_char(':');
+    usart_send_uint8_2digits(record->timestamp.minute);
+    usart_send_char(':');
+    usart_send_uint8_2digits(record->timestamp.second);
+    usart_send_text(";");
     usart_send_text("TEMP=");
     usart_send_uint16(record->sensors.temperature_filtered);
     usart_send_text(";LIGHT=");
