@@ -9,6 +9,7 @@ typedef enum {
 } comm_mode_t;
 
 void comm_init(comm_mode_t mode);
+void comm_send_header(void);
 void comm_send_record(const log_record_t *record);
 
 #endif

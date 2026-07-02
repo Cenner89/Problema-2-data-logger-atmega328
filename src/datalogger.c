@@ -12,6 +12,7 @@ void datalogger_init(void)
     rtc_init();
     mode_select_init();
     comm_init(mode_select_get_comm_mode());
+    comm_send_header();
 }
 
 void datalogger_run_once(void)

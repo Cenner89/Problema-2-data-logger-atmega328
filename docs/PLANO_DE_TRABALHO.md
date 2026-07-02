@@ -40,10 +40,10 @@ Status: planejada
 
 ## Etapa 4 - Comunicacao
 
-Status: planejada
+Status: em andamento
 
-- Implementar transmissao USART completa.
-- Definir protocolo textual ou binario.
+- Implementar transmissao USART completa. Status: base criada.
+- Definir protocolo textual ou binario. Status: CSV textual definido.
 - Testar envio dos registros.
 - Definir e implementar driver do modulo sem fio.
 

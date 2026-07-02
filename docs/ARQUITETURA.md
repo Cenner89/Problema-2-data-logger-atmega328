@@ -18,6 +18,7 @@ main.c
         +-- rtc.c
         |
         +-- comm.c
+        |     +-- usart.c
         |
         +-- mode_select.c
 ```
@@ -34,6 +35,7 @@ main.c
 | `filter.c` | Aplicar filtro digital passa-baixas nas amostras analogicas. |
 | `rtc.c` | Obter data e hora do RTC externo. |
 | `comm.c` | Enviar registros pela interface escolhida. |
+| `usart.c` | Configurar e transmitir bytes pela USART do ATmega328P. |
 | `mode_select.c` | Ler chave/jumper de selecao da interface de comunicacao. |
 
 ## Estrategia de filtragem inicial
@@ -58,6 +60,7 @@ A arquitetura tera uma camada `comm`, com uma interface comum:
 
 ```c
 comm_init(mode);
+comm_send_header();
 comm_send_record(&record);
 ```
 
@@ -67,6 +70,12 @@ Inicialmente serao previstos dois modos:
 - `COMM_MODE_WIRELESS`
 
 Na primeira etapa, a USART sera priorizada porque e mais facil de testar no simulador e no hardware. O modo sem fio entrara depois como driver especifico.
+
+O formato textual escolhido nesta etapa e CSV:
+
+```text
+timestamp,temp_raw,temp_filt,light_raw,light_filt,humidity,rain,mode
+```
 
 ## Selecao fisica da comunicacao
 
