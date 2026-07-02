@@ -15,8 +15,8 @@ Este mapa e uma proposta inicial para organizar o firmware. Ele ainda pode ser a
 | Selecao de comunicacao | PD2 | D2 | Chave/jumper com pull-up interno. |
 | USART RX | PD0 / RXD | D0 | Reservado para comunicacao serial. |
 | USART TX | PD1 / TXD | D1 | Saida serial do data-logger. |
-| RTC SDA | PC4 / SDA | A4 | Provavel barramento I2C/TWI. |
-| RTC SCL | PC5 / SCL | A5 | Provavel barramento I2C/TWI. |
+| RTC SDA | PC4 / SDA | A4 | Barramento I2C/TWI para DS3231. |
+| RTC SCL | PC5 / SCL | A5 | Barramento I2C/TWI para DS3231. |
 
 ## Selecao de comunicacao
 
@@ -34,5 +34,6 @@ O modo sem fio ainda e um stub. Por enquanto ele reutiliza a saida serial para m
 ## Observacoes
 
 - Os pinos D0/D1 devem ser tratados com cuidado, pois tambem sao usados para comunicacao serial/programacao em algumas placas.
-- O RTC ainda nao foi implementado de verdade; a arquitetura esta preparada para usar I2C/TWI.
+- O RTC assumido nesta etapa e o DS3231, com endereco I2C `0x68`.
+- O barramento I2C/TWI normalmente precisa de resistores de pull-up em SDA e SCL.
 - Sensores digitais foram configurados com pull-up interno para evitar entrada flutuante durante testes.

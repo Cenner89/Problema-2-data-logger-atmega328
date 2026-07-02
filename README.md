@@ -86,6 +86,7 @@ Ver detalhes em:
 - `docs/ARQUITETURA.md`
 - `docs/MAPA_PINOS.md`
 - `docs/PROTOCOLO_COMUNICACAO.md`
+- `docs/RTC_I2C.md`
 - `docs/PLANO_DE_TRABALHO.md`
 
 ## Status

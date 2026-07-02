@@ -49,11 +49,12 @@ Status: em andamento
 
 ## Etapa 5 - RTC e timestamp
 
-Status: planejada
+Status: em andamento
 
-- Implementar comunicacao I2C/TWI.
-- Ler data e hora do RTC.
-- Associar timestamp aos registros do data-logger.
+- Implementar comunicacao I2C/TWI. Status: base criada.
+- Ler data e hora do RTC. Status: base DS3231 criada.
+- Associar timestamp aos registros do data-logger. Status: integrado ao protocolo CSV.
+- Validar leitura com modulo RTC real ou simulador.
 
 ## Etapa 6 - Documentacao final
 

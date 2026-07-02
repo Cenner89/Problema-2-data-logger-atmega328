@@ -25,5 +25,9 @@
 #define FILTER_SHIFT             3U
 
 #define COMM_BAUD_RATE           9600UL
+#define TWI_FREQUENCY_HZ         100000UL
+
+#define RTC_DS3231_ADDRESS       0x68U
+#define RTC_FALLBACK_YEAR        2026U
 
 #endif

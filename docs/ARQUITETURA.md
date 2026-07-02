@@ -16,6 +16,7 @@ main.c
         |     +-- filter.c
         |
         +-- rtc.c
+        |     +-- twi.c
         |
         +-- comm.c
         |     +-- usart.c
@@ -34,6 +35,7 @@ main.c
 | `adc.c` | Configurar e ler canais do conversor ADC do ATmega328. |
 | `filter.c` | Aplicar filtro digital passa-baixas nas amostras analogicas. |
 | `rtc.c` | Obter data e hora do RTC externo. |
+| `twi.c` | Implementar comunicacao I2C/TWI usada pelo RTC. |
 | `comm.c` | Enviar registros pela interface escolhida. |
 | `usart.c` | Configurar e transmitir bytes pela USART do ATmega328P. |
 | `mode_select.c` | Ler chave/jumper de selecao da interface de comunicacao. |
@@ -86,6 +88,16 @@ Foi adicionada uma selecao por pino usando `PD2`.
 
 Essa decisao atende ao enunciado, que pede que o usuario escolha a versao de comunicacao antes da instalacao.
 
+## RTC
+
+O firmware passou a assumir um RTC DS3231 no endereco I2C `0x68`.
+
+- SDA: `PC4` / `A4`.
+- SCL: `PC5` / `A5`.
+- Frequencia TWI: 100 kHz.
+
+Se o RTC nao responder, o firmware usa um horario fallback para manter o registro compilavel e transmissivel.
+
 ## Proximo passo tecnico
 
 1. Confirmar ferramenta de projeto: MPLAB X + XC8.
@@ -94,4 +106,5 @@ Essa decisao atende ao enunciado, que pede que o usuario escolha a versao de com
 4. Compilar firmware minimo.
 5. Implementar e testar ADC.
 6. Implementar USART.
-7. Definir RTC e modulo sem fio.
+7. Validar RTC DS3231 em hardware/simulador.
+8. Definir modulo sem fio.

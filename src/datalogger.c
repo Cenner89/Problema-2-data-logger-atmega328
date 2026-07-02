@@ -19,7 +19,7 @@ void datalogger_run_once(void)
 {
     log_record_t record;
 
-    rtc_get_time(&record.timestamp);
+    (void)rtc_get_time(&record.timestamp);
     sensors_read(&record.sensors);
     comm_send_record(&record);
 }
