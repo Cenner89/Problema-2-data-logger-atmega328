@@ -69,6 +69,12 @@ build/problema2.elf
 build/problema2.hex
 ```
 
+Para compilar e rodar os testes automaticos disponiveis:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\test-all.ps1
+```
+
 ## Ferramenta recomendada
 
 A avaliacao inicial aponta como melhor caminho:
@@ -87,10 +93,15 @@ Ver detalhes em:
 - `docs/MAPA_PINOS.md`
 - `docs/PROTOCOLO_COMUNICACAO.md`
 - `docs/RTC_I2C.md`
+- `docs/ARMAZENAMENTO.md`
+- `docs/HARDWARE.md`
+- `docs/RELATORIO_TECNICO.md`
+- `docs/RELATORIO_INDIVIDUAL.md`
+- `docs/CHECKLIST_ENTREGA.md`
 - `docs/PLANO_DE_TRABALHO.md`
 
 ## Status
 
-Repositorio local e remoto iniciados. A primeira base do firmware em C ja compila com XC8 e gera arquivo HEX.
+Repositorio local e remoto iniciados. A base final do firmware em C compila com XC8, gera arquivo HEX, possui documentacao tecnica e teste automatico da logica do filtro.
 
-Proximo passo: detalhar mapa de pinos e implementar/testar os perifericos principais, com prioridade para ADC e USART.
+Pontos que ainda dependem de hardware real: calibracao dos sensores, validacao fisica do RTC DS3231 e escolha final/teste do modulo sem fio.

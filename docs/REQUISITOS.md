@@ -12,14 +12,14 @@ Projetar um data-logger ambiental remoto baseado no ATmega328, capaz de coletar,
 | --- | --- | --- | --- |
 | RF-01 | Leitura de temperatura | Ler sensor analogico de temperatura por ADC. | Planejado |
 | RF-02 | Leitura de luminosidade | Ler sensor analogico baseado em LDR por ADC. | Planejado |
-| RF-03 | Leitura de umidade | Ler sensor digital de umidade relativa do ar. | Planejado |
-| RF-04 | Leitura de chuva | Ler sensor digital de presenca de chuva. | Planejado |
-| RF-05 | RTC | Associar cada amostra a data e hora fornecidas por modulo RTC externo. | Planejado |
-| RF-06 | Filtragem digital | Aplicar filtro passa-baixas nas leituras analogicas antes do armazenamento/transmissao. | Planejado |
-| RF-07 | Comunicacao serial | Transmitir dados pela USART do ATmega328. | Planejado |
-| RF-08 | Comunicacao sem fio | Suportar uma versao com modulo sem fio. | Planejado |
-| RF-09 | Selecao da interface | Permitir escolher, antes da instalacao, qual interface de comunicacao sera usada. | Planejado |
-| RF-10 | Registro das medicoes | Montar registros contendo timestamp e valores dos sensores. | Planejado |
+| RF-03 | Leitura de umidade | Ler sensor digital de umidade relativa do ar. | Implementado como entrada digital |
+| RF-04 | Leitura de chuva | Ler sensor digital de presenca de chuva. | Implementado como entrada digital |
+| RF-05 | RTC | Associar cada amostra a data e hora fornecidas por modulo RTC externo. | Implementado para DS3231 |
+| RF-06 | Filtragem digital | Aplicar filtro passa-baixas nas leituras analogicas antes do armazenamento/transmissao. | Implementado |
+| RF-07 | Comunicacao serial | Transmitir dados pela USART do ATmega328. | Implementado |
+| RF-08 | Comunicacao sem fio | Suportar uma versao com modulo sem fio. | Arquitetura definida |
+| RF-09 | Selecao da interface | Permitir escolher, antes da instalacao, qual interface de comunicacao sera usada. | Implementado por jumper |
+| RF-10 | Registro das medicoes | Montar registros contendo timestamp e valores dos sensores. | Implementado |
 
 ## Requisitos nao funcionais
 
@@ -35,9 +35,9 @@ Projetar um data-logger ambiental remoto baseado no ATmega328, capaz de coletar,
 
 - O microcontrolador sera o ATmega328 ou ATmega328P.
 - A implementacao sera feita em linguagem C.
-- O RTC externo provavelmente usara barramento I2C/TWI.
-- A comunicacao sem fio sera definida depois, mas a arquitetura deve permitir trocar o driver sem alterar a logica principal.
-- Nesta fase inicial, o firmware usa stubs para os modulos ainda nao definidos fisicamente.
+- O RTC externo adotado na proposta e o DS3231 usando barramento I2C/TWI.
+- A comunicacao sem fio sugerida para prototipo e um modulo serial Bluetooth, mantendo o protocolo CSV.
+- O firmware usa fallback de horario caso o RTC nao responda.
 
 ## Riscos e pontos em aberto
 

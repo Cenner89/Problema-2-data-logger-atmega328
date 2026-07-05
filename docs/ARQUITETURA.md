@@ -18,6 +18,8 @@ main.c
         +-- rtc.c
         |     +-- twi.c
         |
+        +-- storage.c
+        |
         +-- comm.c
         |     +-- usart.c
         |
@@ -36,6 +38,7 @@ main.c
 | `filter.c` | Aplicar filtro digital passa-baixas nas amostras analogicas. |
 | `rtc.c` | Obter data e hora do RTC externo. |
 | `twi.c` | Implementar comunicacao I2C/TWI usada pelo RTC. |
+| `storage.c` | Salvar registros recentes na EEPROM interna. |
 | `comm.c` | Enviar registros pela interface escolhida. |
 | `usart.c` | Configurar e transmitir bytes pela USART do ATmega328P. |
 | `mode_select.c` | Ler chave/jumper de selecao da interface de comunicacao. |
@@ -97,6 +100,18 @@ O firmware passou a assumir um RTC DS3231 no endereco I2C `0x68`.
 - Frequencia TWI: 100 kHz.
 
 Se o RTC nao responder, o firmware usa um horario fallback para manter o registro compilavel e transmissivel.
+
+## Armazenamento
+
+O firmware salva cada registro tambem na EEPROM interna do ATmega328P. A estrategia e circular: quando o limite configurado e atingido, o registro mais novo passa a sobrescrever o mais antigo.
+
+Configuracao inicial:
+
+```text
+STORAGE_MAX_RECORDS = 16
+```
+
+Essa solucao demonstra o comportamento de data-logger sem exigir hardware externo de memoria.
 
 ## Proximo passo tecnico
 

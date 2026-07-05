@@ -1,6 +1,6 @@
 # Plano de Trabalho
 
-Data: 2026-06-07
+Data: 2026-07-05
 
 ## Etapa 1 - Base do projeto
 
@@ -18,38 +18,38 @@ Status: concluida
 
 ## Etapa 2 - Requisitos e arquitetura detalhada
 
-Status: em andamento
+Status: concluida na proposta atual
 
 - Confirmar componentes reais disponiveis:
-  - modelo do RTC;
+  - modelo do RTC; Status: DS3231 assumido.
   - modelo do sensor de umidade;
-  - modelo do modulo sem fio;
-  - forma de armazenamento local, se houver.
+  - modelo do modulo sem fio; Status: modulo serial Bluetooth sugerido para prototipo.
+  - forma de armazenamento local, se houver. Status: EEPROM circular implementada.
 - Definir mapa de pinos do ATmega328. Status: primeira versao criada.
-- Definir periodo de amostragem.
-- Definir formato do pacote de dados transmitido.
+- Definir periodo de amostragem. Status: 1 segundo.
+- Definir formato do pacote de dados transmitido. Status: CSV textual.
 
 ## Etapa 3 - Perifericos basicos
 
-Status: planejada
+Status: base implementada
 
 - Testar leitura ADC do sensor de temperatura.
 - Testar leitura ADC do LDR.
 - Testar entradas digitais de umidade e chuva.
-- Validar filtro passa-baixas com leituras simuladas ou reais.
+- Validar filtro passa-baixas com leituras simuladas ou reais. Status: teste automatico de logica criado.
 
 ## Etapa 4 - Comunicacao
 
-Status: em andamento
+Status: base implementada
 
 - Implementar transmissao USART completa. Status: base criada.
 - Definir protocolo textual ou binario. Status: CSV textual definido.
 - Testar envio dos registros.
-- Definir e implementar driver do modulo sem fio.
+- Definir e implementar driver do modulo sem fio. Status: arquitetura definida; teste fisico pendente.
 
 ## Etapa 5 - RTC e timestamp
 
-Status: em andamento
+Status: base implementada
 
 - Implementar comunicacao I2C/TWI. Status: base criada.
 - Ler data e hora do RTC. Status: base DS3231 criada.
@@ -58,7 +58,7 @@ Status: em andamento
 
 ## Etapa 6 - Documentacao final
 
-Status: planejada
+Status: base criada
 
 - Relatorio em formato de artigo IEEE.
 - Especificacao de requisitos.

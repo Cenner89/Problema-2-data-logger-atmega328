@@ -4,12 +4,14 @@
 #include "mode_select.h"
 #include "rtc.h"
 #include "sensors.h"
+#include "storage.h"
 #include "types.h"
 
 void datalogger_init(void)
 {
     sensors_init();
     rtc_init();
+    storage_init();
     mode_select_init();
     comm_init(mode_select_get_comm_mode());
     comm_send_header();
@@ -21,5 +23,6 @@ void datalogger_run_once(void)
 
     (void)rtc_get_time(&record.timestamp);
     sensors_read(&record.sensors);
+    (void)storage_save_record(&record);
     comm_send_record(&record);
 }

@@ -23,6 +23,7 @@
 
 #define LOGGER_SAMPLE_DELAY_MS   1000U
 #define FILTER_SHIFT             3U
+#define STORAGE_MAX_RECORDS      16U
 
 #define COMM_BAUD_RATE           9600UL
 #define TWI_FREQUENCY_HZ         100000UL
