@@ -1,118 +1,98 @@
-# Relatório Técnico - Problema 2
+# Projeto de um Data-Logger Inteligente para Monitoramento Ambiental Remoto Utilizando o Microcontrolador ATmega328P
 
-## Título
-
-Projeto de um Data-Logger Ambiental usando ATmega328P
+Werner Pinheiro Guaraná
+Departamento de Engenharia Elétrica e de Computação
+Universidade Federal da Bahia
+Salvador, Brasil
 
 ## Resumo
 
-Neste trabalho foi desenvolvido um protótipo inicial de um data-logger ambiental usando o microcontrolador ATmega328P. A ideia principal foi montar um sistema capaz de ler sensores, colocar data e hora nas medições, aplicar um filtro simples para diminuir ruído e depois enviar os dados por comunicação serial. Também deixamos prevista uma opção de comunicação sem fio, pensando em um módulo serial sem fio, como um Bluetooth HC-05 ou outro equivalente.
+Este trabalho apresenta o desenvolvimento de uma base de firmware para um data-logger ambiental usando o microcontrolador ATmega328P. O sistema foi pensado para coletar dados de sensores analógicos e digitais, associar cada medição a data e hora usando um RTC externo, aplicar um filtro digital passa-baixas nas leituras analógicas e transmitir os registros por comunicação serial. Também foi incluída uma estrutura inicial para comunicação sem fio, usando a mesma lógica de envio dos dados.
 
-O projeto foi feito em linguagem C, porque o problema pede isso e também porque seria muito trabalhoso fazer tudo em Assembly, principalmente por envolver ADC, RTC, comunicação, filtro e armazenamento. A implementação ainda precisaria ser testada com os sensores reais, mas a base do firmware já compila e gera o arquivo HEX.
+Além disso, foi implementado um armazenamento simples em EEPROM interna, com funcionamento circular, para manter os registros mais recentes. O projeto foi desenvolvido em linguagem C e organizado em módulos, facilitando a manutenção e a continuação do trabalho. A base foi validada por compilação com MPLAB XC8 e por um teste simples da lógica do filtro. Ainda assim, algumas partes precisam de validação em bancada, principalmente sensores reais, RTC físico e módulo sem fio.
 
-## 1. Ideia geral do problema
+**Palavras-chave** — ATmega328P, Data-Logger, Sistemas Embarcados, Monitoramento Ambiental, RTC, EEPROM, Filtragem Digital.
 
-O problema pede um equipamento para monitoramento ambiental remoto. Na prática, seria uma placa que fica em campo coletando informações, como temperatura, luminosidade, umidade e presença de chuva. Cada medição precisa ter data e hora, para depois ser possível saber quando cada evento aconteceu.
+## I. INTRODUÇÃO
 
-Como os sensores analógicos podem apresentar ruído, também foi necessário incluir algum tipo de filtragem digital. Além disso, o sistema deveria ter duas formas de comunicação: uma versão por cabo serial e outra sem fio.
+O monitoramento ambiental é importante em aplicações como agricultura, acompanhamento climático, preservação ambiental e análise de áreas remotas. Em muitos casos, a coleta desses dados ainda é feita manualmente, o que pode gerar atrasos, diferenças nos horários das medições e até perda de informação.
 
-## 2. O que foi implementado
+A proposta deste trabalho foi montar a base de um sistema embarcado capaz de registrar variáveis ambientais automaticamente. Para isso, foi usado o ATmega328P como microcontrolador principal. O sistema faz leitura de sensores, processa os dados, associa data e hora às medições e transmite as informações em formato simples.
 
-O firmware foi dividido em vários arquivos para não ficar tudo misturado no `main.c`. A organização ficou assim:
+O desenvolvimento foi feito em C, pois o problema pediu essa linguagem e porque ela facilita bastante a organização do firmware quando comparada com Assembly. Como o projeto envolve vários periféricos, como ADC, USART, I2C e EEPROM, separar o código em módulos foi uma decisão importante.
 
-- `adc`: faz a leitura dos canais analógicos;
-- `filter`: aplica o filtro passa-baixas;
-- `sensors`: junta as leituras dos sensores;
-- `rtc`: lê data e hora do RTC;
-- `twi`: faz a comunicação I2C/TWI usada pelo RTC;
-- `storage`: salva registros na EEPROM interna;
-- `usart`: cuida da transmissão serial;
-- `comm`: monta o pacote de dados no formato CSV;
-- `mode_select`: escolhe o modo serial ou sem fio por jumper;
-- `datalogger`: junta tudo e controla a sequência principal.
+## II. ARQUITETURA DO SISTEMA
 
-Essa separação ajudou bastante, porque cada parte ficou com uma função mais clara.
+A arquitetura do sistema foi pensada de forma modular. O ATmega328P fica responsável por fazer a leitura dos sensores, aplicar o filtro, buscar data e hora no RTC, armazenar os dados na EEPROM e enviar os registros por comunicação serial ou sem fio.
 
-## 3. Sensores
+Foram considerados quatro sensores ambientais. Os sensores de temperatura e luminosidade são tratados como analógicos e ligados ao ADC. Já os sensores de umidade e chuva são tratados como digitais, usando entradas GPIO do microcontrolador.
 
-Foram considerados dois sensores analógicos:
+Depois da leitura, os valores analógicos passam por um filtro digital passa-baixas. Em seguida, o registro recebe o timestamp vindo do RTC DS3231. Por fim, os dados são armazenados na EEPROM e enviados no formato CSV.
 
-- temperatura no canal ADC0;
-- luminosidade com LDR no canal ADC1.
+**Fig. 1.** Diagrama de blocos da arquitetura proposta: sensores analógicos e digitais conectados ao ATmega328P; RTC DS3231 via I2C/TWI; armazenamento em EEPROM; comunicação por USART ou módulo sem fio.
 
-Também foram previstas duas entradas digitais:
+## III. Implementação do Sistema
 
-- sensor de umidade;
-- sensor de chuva.
+A implementação foi organizada em arquivos separados para deixar o projeto mais fácil de entender. Cada módulo ficou responsável por uma parte específica do firmware. Essa divisão também ajuda caso seja necessário trocar algum sensor, alterar o protocolo de comunicação ou melhorar o armazenamento depois.
 
-Como ainda não temos os modelos exatos dos sensores, o código trabalha com valores brutos do ADC. A conversão para unidades físicas, como graus Celsius ou porcentagem, deve ser feita depois, quando os sensores reais forem definidos.
+### A. Aquisição de Dados
 
-## 4. Filtro digital
+A aquisição dos dados foi dividida entre sensores analógicos e digitais. Os sensores analógicos usam o ADC do ATmega328P. Nesta proposta, o sensor de temperatura foi colocado no canal ADC0 e o sensor de luminosidade, baseado em LDR, no canal ADC1.
 
-Para reduzir oscilações nas leituras analógicas, foi usado um filtro passa-baixas simples. A fórmula usada foi:
+Os sensores digitais de umidade e chuva foram configurados como entradas digitais. Para evitar entradas flutuantes durante os testes, foram usados pull-ups internos. Como ainda não foram definidos os modelos exatos dos sensores, o firmware trabalha inicialmente com valores brutos.
+
+### B. Filtragem Digital
+
+Os sensores analógicos podem apresentar oscilações por ruído elétrico ou variações pequenas do próprio circuito. Para suavizar isso, foi implementado um filtro digital passa-baixas do tipo IIR simples.
+
+A fórmula usada foi:
 
 ```text
 y = y + ((x - y) >> FILTER_SHIFT)
 ```
 
-Esse filtro é simples, mas já ajuda a suavizar mudanças bruscas. Também evita o uso de número de ponto flutuante, o que é melhor para o ATmega328P.
+Essa escolha evita o uso de ponto flutuante e usa apenas operações inteiras, o que combina melhor com o ATmega328P. No projeto, `FILTER_SHIFT` foi definido como 3, equivalente a uma suavização aproximada de 1/8 da diferença entre a nova leitura e o valor filtrado anterior.
 
-## 5. RTC
+### C. Gerenciamento de Data e Hora
 
-Para data e hora, foi assumido o uso do módulo DS3231, que é um RTC comum e relativamente preciso. Ele se comunica por I2C/TWI usando os pinos:
+Para registrar o instante de cada medição, foi adotado o RTC DS3231. Ele se comunica com o ATmega328P pelo barramento I2C/TWI, usando os pinos PC4 para SDA e PC5 para SCL.
 
-- SDA em PC4;
-- SCL em PC5.
+O firmware lê os registradores do DS3231, converte os valores de BCD para decimal e monta uma estrutura com ano, mês, dia, hora, minuto e segundo. Caso o RTC não responda, o sistema usa um horário padrão, apenas para permitir que o restante do firmware continue funcionando.
 
-O firmware já possui uma base para ler o horário do DS3231. Se o RTC não responder, o programa usa um horário padrão só para não travar o funcionamento.
+### D. Armazenamento dos Dados
 
-## 6. Comunicação
+Os registros são armazenados na EEPROM interna do ATmega328P. Foi usada uma estratégia circular: quando o número máximo de registros é atingido, os dados novos passam a sobrescrever os mais antigos.
 
-A comunicação foi feita em formato CSV, porque é fácil de ler no terminal serial e também pode ser aberto em planilhas. O cabeçalho usado foi:
+Essa solução não é a mais completa para um produto real, porque a EEPROM tem pouco espaço e limite de ciclos de escrita. Mesmo assim, ela atende bem à proposta do trabalho, pois demonstra o funcionamento básico de um data-logger sem precisar de memória externa.
+
+### E. Comunicação
+
+A comunicação foi organizada em duas camadas. O módulo `usart` cuida diretamente da transmissão serial, enquanto o módulo `comm` monta os registros no formato definido.
+
+O formato escolhido foi CSV, porque é fácil de visualizar em um terminal serial e também pode ser importado em planilhas. O cabeçalho enviado pelo sistema é:
 
 ```text
 timestamp,temp_raw,temp_filt,light_raw,light_filt,humidity,rain,mode
 ```
 
-Um exemplo de linha transmitida seria:
+Um exemplo de registro seria:
 
 ```text
 2026-01-01T00:00:00,512,500,730,710,1,0,USART
 ```
 
-Para a parte sem fio, a ideia inicial foi manter o mesmo protocolo e usar um módulo serial sem fio. Assim, a lógica do código muda pouco.
+Para a comunicação sem fio, a ideia foi manter o mesmo formato de dados e usar um módulo compatível com comunicação serial, como um módulo Bluetooth. Assim, o firmware muda pouco entre a versão com cabo e a versão sem fio.
 
-## 7. Armazenamento
+## Conclusão
 
-Também foi implementado um armazenamento simples usando a EEPROM interna do ATmega328P. Ele guarda os últimos registros em forma circular. Quando chega no limite, os dados mais antigos começam a ser sobrescritos.
+O projeto resultou em uma base funcional para um data-logger ambiental com ATmega328P. Foram implementados os principais blocos pedidos no problema: leitura de sensores, filtro digital, RTC, armazenamento, comunicação e seleção da interface.
 
-Essa solução não é perfeita para um produto real, porque a EEPROM tem pouco espaço e limite de escritas, mas serve bem para demonstrar a ideia do data-logger no contexto do trabalho.
+O firmware compila com MPLAB XC8 e gera o arquivo HEX. Também foi criado um teste simples para validar a lógica do filtro passa-baixas. Apesar disso, ainda faltam testes físicos com sensores reais, RTC DS3231 conectado e módulo sem fio. Portanto, o trabalho está fechado como uma base de projeto organizada e pronta para validação em bancada.
 
-## 8. Testes feitos
+## Referências
 
-Foi criado um script para compilar o projeto com o XC8 e gerar o arquivo HEX. Também foi feito um teste simples do filtro passa-baixas fora do hardware.
-
-O resultado final foi:
-
-```text
-Build concluido com sucesso.
-HEX: build/problema2.hex
-PASS filtro passa-baixas
-Todos os testes passaram.
-```
-
-## 9. Limitações
-
-Apesar da base estar pronta, algumas coisas ainda dependem de teste em bancada:
-
-- testar o RTC DS3231 real;
-- calibrar os sensores analógicos;
-- confirmar o comportamento dos sensores digitais;
-- escolher e testar o módulo sem fio;
-- avaliar se a EEPROM interna é suficiente para o uso desejado.
-
-## 10. Conclusão
-
-O projeto ficou com uma base funcional e organizada para o data-logger. O código compila, gera HEX e já possui os blocos principais pedidos no problema: sensores, filtro, RTC, comunicação e armazenamento.
-
-Ainda não dá para dizer que o sistema foi validado em campo, porque faltam os testes físicos. Mesmo assim, para a proposta do trabalho, a estrutura principal foi montada e documentada.
+[1] Microchip Technology Inc., ATmega328P Datasheet.
+[2] Microchip Technology Inc., MPLAB XC8 C Compiler User's Guide.
+[3] Analog Devices / Maxim Integrated, DS3231 Extremely Accurate I2C-Integrated RTC.
+[4] M. A. Mazidi, S. Naimi, S. Naimi, The AVR Microcontroller and Embedded Systems Using Assembly and C.
+[5] Material da disciplina ENGC50 - Sistemas Microprocessados, 2026.1.
