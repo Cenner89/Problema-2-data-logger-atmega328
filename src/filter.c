@@ -11,6 +11,7 @@ uint16_t filter_update(lowpass_filter_t *filter, uint16_t sample)
 {
     int16_t delta;
 
+    /* Na primeira leitura nao tem historico, entao o filtro comeca no proprio valor lido. */
     if (!filter->initialized) {
         filter->value = sample;
         filter->initialized = 1;
@@ -18,6 +19,7 @@ uint16_t filter_update(lowpass_filter_t *filter, uint16_t sample)
     }
 
     delta = (int16_t)sample - (int16_t)filter->value;
+    /* Filtro simples: aproxima aos poucos do valor novo, sem usar float. */
     filter->value = (uint16_t)((int16_t)filter->value + (delta >> FILTER_SHIFT));
 
     return filter->value;

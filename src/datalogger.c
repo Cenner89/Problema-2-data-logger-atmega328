@@ -9,6 +9,7 @@
 
 void datalogger_init(void)
 {
+    /* Inicializacao geral. A ordem aqui foi deixada explicita para ficar facil de acompanhar. */
     sensors_init();
     rtc_init();
     storage_init();
@@ -21,6 +22,7 @@ void datalogger_run_once(void)
 {
     log_record_t record;
 
+    /* Ciclo principal do data-logger: pega horario, le sensores, salva e envia. */
     (void)rtc_get_time(&record.timestamp);
     sensors_read(&record.sensors);
     (void)storage_save_record(&record);

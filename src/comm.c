@@ -36,9 +36,10 @@ void comm_send_header(void)
 void comm_send_record(const log_record_t *record)
 {
     if (selected_mode == COMM_MODE_WIRELESS) {
-        /* Stub: por enquanto o modo sem fio reutiliza a saida serial. */
+        /* Ainda nao temos o modulo sem fio real; por enquanto sai no mesmo formato serial. */
     }
 
+    /* Linha CSV simples para facilitar leitura no terminal ou planilha. */
     comm_send_timestamp(record);
     usart_send_char(',');
     usart_send_uint16(record->sensors.temperature_raw);
