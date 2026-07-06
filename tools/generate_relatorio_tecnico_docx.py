@@ -73,6 +73,19 @@ def code_line(doc, text):
     return par
 
 
+def code_block(doc, lines):
+    for line in lines:
+        par = doc.add_paragraph()
+        par.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        par.paragraph_format.left_indent = Cm(0.25)
+        par.paragraph_format.space_after = Pt(0)
+        run = par.add_run(line)
+        run.font.name = "Courier New"
+        run._element.rPr.rFonts.set(qn("w:eastAsia"), "Courier New")
+        run.font.size = Pt(7)
+    doc.add_paragraph().paragraph_format.space_after = Pt(2)
+
+
 doc = Document()
 sec = doc.sections[0]
 sec.top_margin = Cm(1.8)
@@ -152,7 +165,20 @@ cap = p(doc, "Fig. 1. Diagrama de blocos da arquitetura proposta para o sistema 
 cap.paragraph_format.space_before = Pt(8)
 
 heading(doc, "III. Implementação do Sistema")
-p(doc, "A implementação foi organizada em arquivos separados para deixar o projeto mais fácil de entender. Cada módulo ficou responsável por uma parte específica do firmware. Essa divisão também ajuda caso seja necessário trocar algum sensor, alterar o protocolo de comunicação ou melhorar o armazenamento depois.", first=True)
+p(doc, "A implementação foi organizada em arquivos separados para deixar o projeto mais fácil de entender. No começo até daria para colocar tudo em um arquivo só, mas isso deixaria o main.c muito grande e confuso. Como o projeto tem sensor, filtro, RTC, comunicação e armazenamento, separar por função acabou sendo mais organizado.", first=True)
+p(doc, "Na prática, o main.c fica quase só chamando o data-logger. Quem coordena o sistema é o módulo datalogger, mostrado no trecho abaixo. Ele pega o horário, lê os sensores, salva o registro e envia os dados.", first=True)
+code_block(doc, [
+    "void datalogger_run_once(void)",
+    "{",
+    "    log_record_t record;",
+    "",
+    "    (void)rtc_get_time(&record.timestamp);",
+    "    sensors_read(&record.sensors);",
+    "    (void)storage_save_record(&record);",
+    "    comm_send_record(&record);",
+    "}",
+])
+p(doc, "Essa divisão não foi feita para deixar o código mais bonito apenas. Ela ajuda bastante na hora de mexer no projeto, porque se der problema na comunicação, por exemplo, não é preciso procurar no meio do código do ADC ou do filtro.", first=True)
 
 subheading(doc, "A. Aquisição de Dados")
 p(doc, "A aquisição dos dados foi dividida entre sensores analógicos e digitais. Os sensores analógicos usam o ADC do ATmega328P. Nesta proposta, o sensor de temperatura foi colocado no canal ADC0 e o sensor de luminosidade, baseado em LDR, no canal ADC1.", first=True)
@@ -161,6 +187,12 @@ p(doc, "Os sensores digitais de umidade e chuva foram configurados como entradas
 subheading(doc, "B. Filtragem Digital")
 p(doc, "Os sensores analógicos podem apresentar oscilações por ruído elétrico ou variações pequenas do próprio circuito. Para suavizar isso, foi implementado um filtro digital passa-baixas do tipo IIR simples.", first=True)
 code_line(doc, "y = y + ((x - y) >> FILTER_SHIFT)")
+p(doc, "No código, essa ideia aparece de forma bem direta:", first=True)
+code_block(doc, [
+    "delta = (int16_t)sample - (int16_t)filter->value;",
+    "filter->value = (uint16_t)((int16_t)filter->value +",
+    "                           (delta >> FILTER_SHIFT));",
+])
 p(doc, "Essa escolha evita o uso de ponto flutuante e usa apenas operações inteiras, o que combina melhor com o ATmega328P. No projeto, FILTER_SHIFT foi definido como 3, equivalente a uma suavização aproximada de 1/8 da diferença entre a nova leitura e o valor filtrado anterior.", first=True)
 
 subheading(doc, "C. Gerenciamento de Data e Hora")
@@ -175,6 +207,14 @@ subheading(doc, "E. Comunicação")
 p(doc, "A comunicação foi organizada em duas camadas. O módulo usart cuida diretamente da transmissão serial, enquanto o módulo comm monta os registros no formato definido.", first=True)
 p(doc, "O formato escolhido foi CSV, porque é fácil de visualizar em um terminal serial e também pode ser importado em planilhas. O cabeçalho enviado pelo sistema é:", first=True)
 code_line(doc, "timestamp,temp_raw,temp_filt,light_raw,light_filt,humidity,rain,mode")
+p(doc, "Um trecho simplificado da montagem do registro é:", first=True)
+code_block(doc, [
+    "comm_send_timestamp(record);",
+    "usart_send_char(',');",
+    "usart_send_uint16(record->sensors.temperature_raw);",
+    "usart_send_char(',');",
+    "usart_send_uint16(record->sensors.temperature_filtered);",
+])
 p(doc, "Para a comunicação sem fio, a ideia foi manter o mesmo formato de dados e usar um módulo compatível com comunicação serial, como um módulo Bluetooth. Assim, o firmware muda pouco entre a versão com cabo e a versão sem fio.", first=True)
 
 heading(doc, "Conclusão")

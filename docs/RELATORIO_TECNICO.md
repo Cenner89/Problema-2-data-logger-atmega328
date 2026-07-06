@@ -33,7 +33,23 @@ Depois da leitura, os valores analógicos passam por um filtro digital passa-bai
 
 ## III. Implementação do Sistema
 
-A implementação foi organizada em arquivos separados para deixar o projeto mais fácil de entender. Cada módulo ficou responsável por uma parte específica do firmware. Essa divisão também ajuda caso seja necessário trocar algum sensor, alterar o protocolo de comunicação ou melhorar o armazenamento depois.
+A implementação foi organizada em arquivos separados para deixar o projeto mais fácil de entender. No começo até daria para colocar tudo em um arquivo só, mas isso deixaria o `main.c` muito grande e confuso. Como o projeto tem sensor, filtro, RTC, comunicação e armazenamento, separar por função acabou sendo mais organizado.
+
+Na prática, o `main.c` fica quase só chamando o data-logger. Quem coordena o sistema é o módulo `datalogger`, mostrado no trecho abaixo. Ele pega o horário, lê os sensores, salva o registro e envia os dados.
+
+```c
+void datalogger_run_once(void)
+{
+    log_record_t record;
+
+    (void)rtc_get_time(&record.timestamp);
+    sensors_read(&record.sensors);
+    (void)storage_save_record(&record);
+    comm_send_record(&record);
+}
+```
+
+Essa divisão não foi feita para deixar o código "mais bonito" apenas. Ela ajuda bastante na hora de mexer no projeto, porque se der problema na comunicação, por exemplo, não é preciso procurar no meio do código do ADC ou do filtro.
 
 ### A. Aquisição de Dados
 
@@ -49,6 +65,13 @@ A fórmula usada foi:
 
 ```text
 y = y + ((x - y) >> FILTER_SHIFT)
+```
+
+No código, essa ideia aparece de forma bem direta:
+
+```c
+delta = (int16_t)sample - (int16_t)filter->value;
+filter->value = (uint16_t)((int16_t)filter->value + (delta >> FILTER_SHIFT));
 ```
 
 Essa escolha evita o uso de ponto flutuante e usa apenas operações inteiras, o que combina melhor com o ATmega328P. No projeto, `FILTER_SHIFT` foi definido como 3, equivalente a uma suavização aproximada de 1/8 da diferença entre a nova leitura e o valor filtrado anterior.
@@ -79,6 +102,16 @@ Um exemplo de registro seria:
 
 ```text
 2026-01-01T00:00:00,512,500,730,710,1,0,USART
+```
+
+Um trecho simplificado da montagem do registro é:
+
+```c
+comm_send_timestamp(record);
+usart_send_char(',');
+usart_send_uint16(record->sensors.temperature_raw);
+usart_send_char(',');
+usart_send_uint16(record->sensors.temperature_filtered);
 ```
 
 Para a comunicação sem fio, a ideia foi manter o mesmo formato de dados e usar um módulo compatível com comunicação serial, como um módulo Bluetooth. Assim, o firmware muda pouco entre a versão com cabo e a versão sem fio.
