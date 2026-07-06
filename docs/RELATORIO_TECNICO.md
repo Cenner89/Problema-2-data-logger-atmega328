@@ -29,8 +29,6 @@ Foram considerados quatro sensores ambientais. Os sensores de temperatura e lumi
 
 Depois da leitura, os valores analógicos passam por um filtro digital passa-baixas. Em seguida, o registro recebe o timestamp vindo do RTC DS3231. Por fim, os dados são armazenados na EEPROM e enviados no formato CSV.
 
-**Fig. 1.** Diagrama de blocos da arquitetura proposta: sensores analógicos e digitais conectados ao ATmega328P; RTC DS3231 via I2C/TWI; armazenamento em EEPROM; comunicação por USART ou módulo sem fio.
-
 ## III. Implementação do Sistema
 
 A implementação foi organizada em arquivos separados para deixar o projeto mais fácil de entender. No começo até daria para colocar tudo em um arquivo só, mas isso deixaria o `main.c` muito grande e confuso. Como o projeto tem sensor, filtro, RTC, comunicação e armazenamento, separar por função acabou sendo mais organizado.
